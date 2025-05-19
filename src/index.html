@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Socket.IO Example</title>
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <h1>Socket.IO Communication</h1>
+  <input type="text" id="messageInput" placeholder="Enter your message">
+  <button onclick="sendMessage()">Send</button>
+  <div id="serverResponse"></div>
+
+  <script>
+    const socket = io();
+    const messageInput = document.getElementById('messageInput');
+    const serverResponseDiv = document.getElementById('serverResponse');
+
+    function sendMessage() {
+      const message = messageInput.value;
+      if (message) {
+        socket.emit('hello', message);
+        messageInput.value = ''; // Clear the input field
+      }
+    }
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+
+    socket.on('serverToClient', (response) => {
+      console.log('Server response:', response);
+      serverResponseDiv.textContent = response;
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+      serverResponseDiv.textContent = 'Disconnected from server';
+    });
+  </script>
+</body>
+</html>
