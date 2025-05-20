@@ -8,7 +8,6 @@ import {
   SocketData,
 } from "./types/socket";
 
-
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer(app);
@@ -18,7 +17,7 @@ const io = new Server<
   ServerToClientEvents,
   InterServerEvents,
   SocketData
->(server, { cors: { origin: "*" } });
+>(server, { cors: { origin: "*" }, pingTimeout: 60000 });
 
 const connectedUsers: string[] = [];
 
@@ -46,6 +45,10 @@ io.on("connection", (socket) => {
       id: socket.id,
       x: 0,
       y: 0,
+    });
+    io.emit("message", {
+      id: "Disconnected",
+      message: `user disconnected: ${socket.id}`,
     });
     console.log(connectedUsers.splice(connectedUsers.indexOf(socket.id)));
   });
